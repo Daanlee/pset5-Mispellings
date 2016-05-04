@@ -1,0 +1,79 @@
+0.  A specific kind of pneumoconiosis caused by inhalation of very fine silicate or quartz dust. More relevently, the longest word in the dictionary
+1.  Actually returns the pointer to the total resources used by the program by either the calling process, the children of the calling process or
+    the calling thread
+2.  16
+3.  So that while those values change, the correct values are used and not a copy of the value when the getrusage() method was called.
+    Could possibly be costly to copy values instead of using the actual values.
+4.  From line 59:
+    Set the "string" text to the location where the text to be opened is allocated.
+    this is doen with an if else, if there are 3 command line arguments, use the 3rd[2] argument as the
+    location of the text, else, if there are 2 command line arguments, use the 2nd[1] argumnet as the
+    location of the test.
+    
+    Open the file in read mode, check if its open, if not close file, unload all loaded words
+    from the dictionary and return 1
+    
+    Line 76:
+    initialise c to the first character in the file ; while c is not the EOF (end of file character), 
+    keep looping through the characters in the file one at a time
+    
+    if the character is a letter or an apostrophe, put it in position index of the word array
+    increment the index variable
+    
+    If the word is too long to be a word, do not append the characters to the word array but 
+    continue reading the letters until the end of file character is reached. Set index to 0 for
+    the next word
+    
+    if there is a number, do similarly to above
+    
+    if there is any character that is not a number or a letter, we assume that we have found a
+    word and append the end of string character \0 to the end of the word array.
+    
+    count the word
+    
+    using the check() function, check that the word is spelled correctly; if it is misspelled,
+    print the word. Also determine how long it takes to inplement this check and adds it to the
+    total running time that it takes to check the spellings of all words.
+    
+    set index to 0 so that the next word can be 0 indexed. This is also done for words with numbers
+    and words that are too long.
+    
+    check if there is an error in the file, if so close the file, unload the words from the dictionary in
+    memory, return 1 as the error code
+    
+    close the text flie.
+    
+5.  It is certainly possible to read in strings using fscanf(). These would need to be passed by reference
+    into a buffer.
+    However by using fgetf we can discriminate earlier and only allow alphabetic characters to be appended
+    to our words. We can also easily determine the end of words by checking for whitespace.
+    If we used fscanf, it is likely that we would have far fewer strings containing many(if not all) the words
+    in one string. we would then need to iterate through this to find the end of words. Effectively doing the
+    same job twice. Costing us time.
+    
+6.  conts allows all the variable sent to the method/function to be read-only. It also ensures that the values sent to the method
+    will not be changed if the values that are referred to do change.
+7.  simple trie structure as follows:
+     // Structure of trie
+    typedef struct node
+    {
+        bool is_word;
+        //pointer to next node
+        struct node *child[27];
+    }
+    node;
+    
+    Each node therefore has a bit that is set if is indeed the end of the word or not. And a pointer to a node that has the next letter
+    I do not need a pointer to the previous node as I onyl travel forward
+8.  My time in check was much slower as was my unload - both about half a second.
+
+9.  Removed redundant loops, had my check working into a buffer and then checking, changed that to just check each letter as it is read
+    from the word. Used valgrind to determine memory leaks - had 27 initally, wasn't freeing parent nodes but only children. Then I wasn't
+    closing the dictionary file correctly, so I did that.
+    
+10. I feel that mallocing memory for each node is quite expensive timewise but I can't be sure if there is another way to more cheaply
+    allocate memory. I feel that if I just allocated 150 000 nodes and access each one in order some time could be saved.
+    Now becuase this isn't dyanamic its a bad design desicion but, like done in the cs50.h method, I  could initailly ask for one node
+    then 2, then 4, then 8, then 16 etc as required. This will quickly reach 150k. This can also be freed very quickly and easily.
+    More quickly than my current 0.06
+
